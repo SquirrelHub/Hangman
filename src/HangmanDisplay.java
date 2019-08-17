@@ -1,8 +1,11 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-public class HangmanDisplay {
-
+public class HangmanDisplay extends Canvas{
+    protected JFrame j;
     private ArrayList<Character> wrongInputs;
     private HangmanLogic hLogic;
     private String placeholderWord="";
@@ -12,6 +15,13 @@ public class HangmanDisplay {
 
     public HangmanDisplay(){
         this.hLogic = new HangmanLogic();
+        j = new JFrame();
+        Rectangle rect = new Rectangle();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        rect.setBounds((int)screenSize.getWidth()/2, (int)screenSize.getHeight()/2, (int)screenSize.getWidth()/4, (int)screenSize.getHeight()/4);
+        j.setBounds(rect);
+        j.setLayout(null);
+
     }
 
     // Get input from user
@@ -21,20 +31,20 @@ public class HangmanDisplay {
     }
 
     public void displayHangman(){
-        this.figure += man[index];
-        JOptionPane.showMessageDialog(null, figure);
-        index++;
+        j.setVisible(true);
+        j.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
     }
 
-    public void displayWrongInputs(String word){
-        JOptionPane.showMessageDialog(null, wrongVals);
-    }
+    public void displayWrongInputs(String word){}
 
     public void displayCorrectInputs(String word){
-        JOptionPane.showMessageDialog(null, word);
     }
 
     public void letterAlreadyGuessed(){
-        JOptionPane.showMessageDialog(null, "Letter is already guessed");
     }
 }
