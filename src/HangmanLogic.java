@@ -7,24 +7,20 @@ public class HangmanLogic {
     List<String> goodLetters = new ArrayList<>();
 
     boolean isGameOver(){
-        return goodLetters.size() == word.length() || badLetters.size() == 10 ? true : false;
+        return buildAnswer().equals(word) || badLetters.size() == 10 ? true : false;
     }
 
     void guessChar (Character c){
         if (badLetters.contains(c.toString()) || goodLetters.contains(c.toString())){
             return;
         }
-        boolean found = false;
         for(Character letter : word.toCharArray()){
             if (letter == c){
                 goodLetters.add(c.toString());
-                found = true;
                 return;
             }
         }
-        if (!found){
-            badLetters.add(c.toString());
-        }
+        badLetters.add(c.toString());
     }
 
     public String getWord() {
@@ -37,5 +33,17 @@ public class HangmanLogic {
 
     public List<String> getGoodLetters() {
         return goodLetters;
+    }
+
+    public String buildAnswer(){
+        String answer = "_".repeat(word.length());
+        for (int i = 0; i < word.length(); i++){
+            if (goodLetters.contains(Character.toString(word.charAt(i)))){
+                StringBuilder str = new StringBuilder(answer);
+                str.setCharAt(i, word.charAt(i));
+                answer = str.toString();
+            }
+        }
+        return answer;
     }
 }

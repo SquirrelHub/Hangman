@@ -4,14 +4,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 
 public class HangmanDisplay extends Canvas{
     private JFrame j;
-    private ArrayList<Character> wrongInputs;
     private HangmanLogic hLogic;
     private JTextField textField;
-    private JLabel badText, goodText;
+    private JLabel badText, goodText, answer;
     private JLabel hang[];
     public HangmanDisplay(){
         this.hLogic = new HangmanLogic();
@@ -23,6 +21,10 @@ public class HangmanDisplay extends Canvas{
         textField = new JTextField();
         textField.setBounds(210, 250, 212, 36);
         textField.setPreferredSize(new Dimension(300, 100));
+        answer = new JLabel();
+        answer.setBounds(280, 150, 100, 100);
+        prettyPrint(hLogic.buildAnswer());
+        j.add(answer);
         j.add(textField);
         j.setResizable(false);
         badText = new JLabel("Bad Letters");
@@ -83,19 +85,23 @@ public class HangmanDisplay extends Canvas{
     }
 
     public void update(){
-
-        if (textField.getText() == ""){
+        if (textField.getText().equals("")){
             JOptionPane.showMessageDialog(null, "Please enter a character to guess.");
         }
-        else if (textField.getText().length() > 1 && textField.getText() != hLogic.getWord()) {
+        else if (textField.getText().length() > 1 && !textField.getText().equals(hLogic.getWord())) {
             JOptionPane.showMessageDialog(null,
                     "Unless you're guessing the word, please only use one letter.");
         }
+        else if (textField.getText().equals(hLogic.getWord())){
+            JOptionPane.showMessageDialog(null, "You Won");
+            System.exit(0);
+        }
         else{
             hLogic.guessChar(textField.getText().charAt(0));
+            prettyPrint(hLogic.buildAnswer());
             if (hLogic.isGameOver()){
                 drawMan();
-                if (hLogic.getGoodLetters().size() == hLogic.getWord().length()){
+                if (hLogic.getWord().equals(hLogic.buildAnswer())){
                     JOptionPane.showMessageDialog(null, "You Won");
                 }
                 else{
@@ -114,5 +120,14 @@ public class HangmanDisplay extends Canvas{
         for (int i = 0; i < hLogic.getBadLetters().size(); i++){
             hang[i].setVisible(true);
         }
+    }
+
+    private void prettyPrint(String word){
+        String formatted = "";
+        for (int i = 0; i < word.length(); i++){
+            formatted += " ";
+            formatted += word.substring(i, i+1);
+        }
+        answer.setText(formatted);
     }
 }
